@@ -35,6 +35,7 @@
         INNER JOIN LIBRO L ON L.ID_LIBRO = P.ID_LIBRO
         INNER JOIN ESTUDIANTE E ON E.ID_ESTUDIANTE = P.ID_ESTUDIANTE
         WHERE P.ACTIVO = 1
+        ORDER BY P.ID_PRESTAMO
     </select>
 
     <select id="findById" parameterType="int" resultMap="PrestamoMap">

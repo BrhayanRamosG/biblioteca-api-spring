@@ -59,7 +59,7 @@ public class PrestamoService {
 		try {
 			prestamoMapper.insert(prestamo);
 			
-			return prestamoMapper.findById(prestamo.getIdEstudiante()).orElseThrow(() -> new CustomException("Prestamo no encontrado", HttpStatus.NOT_FOUND));
+			return prestamoMapper.findById(prestamo.getIdPrestamo()).orElseThrow(() -> new CustomException("Prestamo no encontrado", HttpStatus.NOT_FOUND));
 		} catch (PersistenceException e) {
 			log.error("Error al guardar prestamo: {}", e.getMessage());
 			throw new CustomException("Error al guardar prestamo", HttpStatus.INTERNAL_SERVER_ERROR);
