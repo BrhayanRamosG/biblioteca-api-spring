@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.brag.biblioteca.mapper.PrestamoMapper">
+
+    <resultMap id="PrestamoMap" type="com.brag.biblioteca.model.Prestamo">
+        <id property="idPrestamo" column="ID_PRESTAMO"/>
+        <result property="idLibro" column="ID_LIBRO"/>
+        <result property="idEstudiante" column="ID_ESTUDIANTE"/>
+        <result property="fechaPrestamo" column="FECHA_PRESTAMO"/>
+        <result property="fechaDevolucion" column="FECHA_DEVOLUCION"/>
+        <result property="devuelto" column="DEVUELTO"/>
+        <result property="isActivo" column="ACTIVO"/>
+    </resultMap>
+    
+    <resultMap id="PrestamoDetalleMap" type="com.brag.biblioteca.model.PrestamoDetalle">
+        <id property="idPrestamo" column="ID_PRESTAMO"/>
+        <result property="idLibro" column="ID_LIBRO"/>
+        <result property="idEstudiante" column="ID_ESTUDIANTE"/>
+        <result property="fechaPrestamo" column="FECHA_PRESTAMO"/>
+        <result property="fechaDevolucion" column="FECHA_DEVOLUCION"/>
+        <result property="devuelto" column="DEVUELTO"/>
+        <result property="isActivo" column="ACTIVO"/>
+        <result property="tituloLibro" column="TITULO"/>
+        <result property="nombreAlumno" column="NOMBRE"/>
+        <result property="apellidoAlumno" column="APELLIDO"/>
+    </resultMap>
+    
+    <!-- Consultas -->
+    <select id="findAll" resultMap="PrestamoDetalleMap">
+        SELECT P.ID_PRESTAMO, L.ID_LIBRO, E.ID_ESTUDIANTE, P.FECHA_PRESTAMO, P.FECHA_DEVOLUCION, P.DEVUELTO, P.ACTIVO, L.TITULO, E.NOMBRE, E.APELLIDO
+        FROM PRESTAMO P
+        INNER JOIN LIBRO L ON L.ID_LIBRO = P.ID_LIBRO
+        INNER JOIN ESTUDIANTE E ON E.ID_ESTUDIANTE = P.ID_ESTUDIANTE
+        WHERE P.ACTIVO = 1
+    </select>
+
+    <select id="findById" parameterType="int" resultMap="PrestamoMap">
+        SELECT ID_PRESTAMO, ID_LIBRO, ID_ESTUDIANTE, FECHA_PRESTAMO, FECHA_DEVOLUCION, DEVUELTO, ACTIVO 
+        FROM PRESTAMO
+        WHERE ID_PRESTAMO = #{idPrestamo} AND ACTIVO = 1
+    </select>
+
+    <insert id="insert" parameterType="com.brag.biblioteca.model.Prestamo">
+        <selectKey keyProperty="idPrestamo" resultType="int" order="BEFORE">
+        SELECT SEQ_PRESTAMO.NEXTVAL FROM dual
+        </selectKey>
+        INSERT INTO PRESTAMO (ID_PRESTAMO, ID_LIBRO, ID_ESTUDIANTE, FECHA_PRESTAMO)
+        VALUES (#{idPrestamo}, #{idLibro}, #{idEstudiante}, SYSDATE)
+    </insert>
+
+    <update id="update" parameterType="com.brag.biblioteca.model.Prestamo">
+        UPDATE PRESTAMO
+        SET DEVUELTO=#{devuelto}
+        WHERE ID_PRESTAMO=#{idPrestamo} AND ACTIVO = 1
+    </update>
+
+    <delete id="delete" parameterType="int">
+        UPDATE PRESTAMO SET ACTIVO = 0 WHERE ID_PRESTAMO=#{idPrestamo} AND ACTIVO = 1
+    </delete>
+
+</mapper>

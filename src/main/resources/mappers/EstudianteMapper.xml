@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.brag.biblioteca.mapper.EstudianteMapper">
+
+    <resultMap id="EstudianteMap" type="com.brag.biblioteca.model.Estudiante">
+        <id property="idEstudiante" column="ID_ESTUDIANTE"/>
+        <result property="nombre" column="NOMBRE"/>
+        <result property="apellido" column="APELLIDO"/>
+        <result property="email" column="EMAIL"/>
+        <result property="fechaRegistro" column="FECHA_REGISTRO"/>
+        <result property="isActivo" column="ACTIVO"/>
+    </resultMap>
+
+    <!-- Consultas -->
+    <select id="findAll" resultMap="EstudianteMap">
+        SELECT ID_ESTUDIANTE, NOMBRE, APELLIDO, EMAIL, FECHA_REGISTRO, ACTIVO FROM ESTUDIANTE
+        WHERE ACTIVO = 1
+    </select>
+
+    <select id="findById" parameterType="int" resultMap="EstudianteMap">
+        SELECT ID_ESTUDIANTE, NOMBRE, APELLIDO, EMAIL, FECHA_REGISTRO, ACTIVO FROM ESTUDIANTE 
+        WHERE ID_ESTUDIANTE = #{idEstudiante} AND ACTIVO = 1
+    </select>
+
+    <insert id="insert" parameterType="com.brag.biblioteca.model.Estudiante">
+        <selectKey keyProperty="idEstudiante" resultType="int" order="BEFORE">
+        SELECT SEQ_ESTUDIANTE.NEXTVAL FROM dual
+        </selectKey>
+        INSERT INTO ESTUDIANTE (ID_ESTUDIANTE, NOMBRE, APELLIDO, EMAIL)
+        VALUES (#{idEstudiante}, #{nombre}, #{apellido}, #{email})
+    </insert>
+
+    <update id="update" parameterType="com.brag.biblioteca.model.Estudiante">
+        UPDATE ESTUDIANTE
+        SET NOMBRE=#{nombre}, APELLIDO=#{apellido}, EMAIL=#{email}
+        WHERE ID_ESTUDIANTE=#{idEstudiante} AND ACTIVO = 1
+    </update>
+
+    <delete id="delete" parameterType="int">
+        UPDATE ESTUDIANTE SET ACTIVO = 0 WHERE ID_ESTUDIANTE=#{idEstudiante} AND ACTIVO = 1
+    </delete>
+
+</mapper>

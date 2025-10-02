@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.brag.biblioteca.mapper.LibroMapper">
+
+    <resultMap id="LibroMap" type="com.brag.biblioteca.model.Libro">
+        <id property="idLibro" column="ID_LIBRO"/>
+        <result property="titulo" column="TITULO"/>
+        <result property="autor" column="AUTOR"/>
+        <result property="anioPublicacion" column="ANIO_PUBLICACION"/>
+        <result property="cantidadDisponible" column="CANTIDAD_DISPONIBLE"/>
+        <result property="fechaRegistro" column="FECHA_REGISTRO"/>
+        <result property="isActivo" column="ACTIVO"/>
+    </resultMap>
+
+    <!-- Consultas -->
+    <select id="findAll" resultMap="LibroMap">
+        SELECT ID_LIBRO, TITULO, AUTOR, ANIO_PUBLICACION, CANTIDAD_DISPONIBLE, FECHA_REGISTRO, ACTIVO FROM LIBRO
+        WHERE ACTIVO = 1
+    </select>
+
+    <select id="findById" parameterType="int" resultMap="LibroMap">
+        SELECT ID_LIBRO, TITULO, AUTOR, ANIO_PUBLICACION, CANTIDAD_DISPONIBLE, FECHA_REGISTRO, ACTIVO FROM LIBRO 
+        WHERE ID_LIBRO = #{idLibro} AND ACTIVO = 1
+    </select>
+
+    <insert id="insert" parameterType="com.brag.biblioteca.model.Libro">
+        <selectKey keyProperty="idLibro" resultType="int" order="BEFORE">
+        SELECT SEQ_LIBRO.NEXTVAL FROM dual
+        </selectKey>
+        INSERT INTO LIBRO (ID_LIBRO, TITULO, AUTOR, ANIO_PUBLICACION, CANTIDAD_DISPONIBLE)
+        VALUES (#{idLibro}, #{titulo}, #{autor}, #{anioPublicacion}, #{cantidadDisponible})
+    </insert>
+
+    <update id="update" parameterType="com.brag.biblioteca.model.Libro">
+        UPDATE LIBRO
+        SET TITULO=#{titulo}, AUTOR=#{autor}, ANIO_PUBLICACION=#{anioPublicacion}, CANTIDAD_DISPONIBLE=#{cantidadDisponible}
+        WHERE ID_LIBRO=#{idLibro} AND ACTIVO = 1
+    </update>
+
+    <delete id="delete" parameterType="int">
+        UPDATE LIBRO SET ACTIVO = 0 WHERE ID_LIBRO=#{idLibro} AND ACTIVO = 1
+    </delete>
+
+</mapper>
